@@ -1,0 +1,60 @@
+@url=http://localhost:3000
+
+### Registro de usuario
+POST {{url}}/auth/registro
+Content-Type: application/json
+
+{
+    "nombre": "Marcelo",
+    "email": "marcelo@tp3.com",
+    "password": "clave1234"
+}
+
+### Registro con datos inválidos (400)
+POST {{url}}/auth/registro
+Content-Type: application/json
+
+{
+    "nombre": "M4rcelo",
+    "email": "no-es-un-email",
+    "password": "123"
+}
+
+### Registro con email ya existente (400)
+POST {{url}}/auth/registro
+Content-Type: application/json
+
+{
+    "nombre": "Demo",
+    "email": "demo@tp3.com",
+    "password": "demo1234"
+}
+
+### Login
+# @name login
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "demo@tp3.com",
+    "password": "demo1234"
+}
+
+###
+@token = {{login.response.body.token}}
+
+### Login con contraseña incorrecta (401)
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "demo@tp3.com",
+    "password": "incorrecta1"
+}
+
+### Acceso sin token (401)
+GET {{url}}/vehiculos
+
+### Acceso con token
+GET {{url}}/vehiculos
+Authorization: Bearer {{token}}

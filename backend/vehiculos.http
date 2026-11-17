@@ -1,0 +1,94 @@
+@url=http://localhost:3000
+
+### Login (ejecutar primero para obtener el token)
+# @name login
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "demo@tp3.com",
+    "password": "demo1234"
+}
+
+###
+@token = {{login.response.body.token}}
+
+### Listado de vehiculos
+GET {{url}}/vehiculos
+Authorization: Bearer {{token}}
+
+### Listado de vehiculos con filtro de marca
+GET {{url}}/vehiculos?marca=iveco
+Authorization: Bearer {{token}}
+
+### Listado de vehiculos con filtro de patente
+GET {{url}}/vehiculos?patente=AB
+Authorization: Bearer {{token}}
+
+### Detalles de vehiculo
+GET {{url}}/vehiculos/1
+Authorization: Bearer {{token}}
+
+### Detalles de vehiculo con id inválido (400)
+GET {{url}}/vehiculos/algo
+Authorization: Bearer {{token}}
+
+### Detalles de vehiculo inexistente (404)
+GET {{url}}/vehiculos/999
+Authorization: Bearer {{token}}
+
+### Crear vehiculo
+# @name nuevoVehiculo
+POST {{url}}/vehiculos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "marca": "Renault",
+    "modelo": "Master",
+    "patente": "AE321ZZ",
+    "anio": 2024,
+    "capacidadCarga": 1500
+}
+
+### Crear vehiculo con datos inválidos (400)
+POST {{url}}/vehiculos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "marca": "",
+    "modelo": "Master",
+    "patente": "1234",
+    "anio": 1800,
+    "capacidadCarga": -5
+}
+
+### Modificar vehiculo
+PUT {{url}}/vehiculos/{{nuevoVehiculo.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "marca": "Renault",
+    "modelo": "Master L2H2",
+    "patente": "AE321ZZ",
+    "anio": 2024,
+    "capacidadCarga": 1600
+}
+
+### Quitar vehiculo
+DELETE {{url}}/vehiculos/{{nuevoVehiculo.response.body.id}}
+Authorization: Bearer {{token}}
+
+### Quitar vehiculo con viajes (400)
+DELETE {{url}}/vehiculos/1
+Authorization: Bearer {{token}}
+
+### Historial de viajes de un vehiculo
+GET {{url}}/vehiculos/1/viajes
+Authorization: Bearer {{token}}
+
+### Total de kilometros de un vehiculo
+GET {{url}}/vehiculos/1/kilometros
+Authorization: Bearer {{token}}

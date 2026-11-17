@@ -1,0 +1,85 @@
+@url=http://localhost:3000
+
+### Login (ejecutar primero para obtener el token)
+# @name login
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "demo@tp3.com",
+    "password": "demo1234"
+}
+
+###
+@token = {{login.response.body.token}}
+
+### Listado de conductores
+GET {{url}}/conductores
+Authorization: Bearer {{token}}
+
+### Listado de conductores con filtro de apellido
+GET {{url}}/conductores?apellido=pe
+Authorization: Bearer {{token}}
+
+### Detalles de conductor
+GET {{url}}/conductores/1
+Authorization: Bearer {{token}}
+
+### Detalles de conductor inexistente (404)
+GET {{url}}/conductores/999
+Authorization: Bearer {{token}}
+
+### Crear conductor
+# @name nuevoConductor
+POST {{url}}/conductores
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Lucía",
+    "apellido": "Fernández",
+    "dni": "40111222",
+    "numeroLicencia": "LR40111222",
+    "fechaAltaLicencia": "2024-05-20",
+    "fechaVencimientoLicencia": "2029-05-20"
+}
+
+### Crear conductor con fechas inválidas (400)
+POST {{url}}/conductores
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Lucía",
+    "apellido": "Fernández",
+    "dni": "401",
+    "numeroLicencia": "LR40111222",
+    "fechaAltaLicencia": "2024-05-20",
+    "fechaVencimientoLicencia": "2020-01-01"
+}
+
+### Modificar conductor
+PUT {{url}}/conductores/{{nuevoConductor.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Lucía Belén",
+    "apellido": "Fernández",
+    "dni": "40111222",
+    "numeroLicencia": "LR40111222",
+    "fechaAltaLicencia": "2024-05-20",
+    "fechaVencimientoLicencia": "2029-05-20"
+}
+
+### Quitar conductor
+DELETE {{url}}/conductores/{{nuevoConductor.response.body.id}}
+Authorization: Bearer {{token}}
+
+### Historial de viajes de un conductor
+GET {{url}}/conductores/1/viajes
+Authorization: Bearer {{token}}
+
+### Total de kilometros de un conductor
+GET {{url}}/conductores/1/kilometros
+Authorization: Bearer {{token}}

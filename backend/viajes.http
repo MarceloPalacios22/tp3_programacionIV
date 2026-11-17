@@ -1,0 +1,101 @@
+@url=http://localhost:3000
+
+### Login (ejecutar primero para obtener el token)
+# @name login
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "demo@tp3.com",
+    "password": "demo1234"
+}
+
+###
+@token = {{login.response.body.token}}
+
+### Listado de viajes
+GET {{url}}/viajes
+Authorization: Bearer {{token}}
+
+### Listado de viajes de un vehiculo
+GET {{url}}/viajes?vehiculoId=1
+Authorization: Bearer {{token}}
+
+### Listado de viajes de un conductor
+GET {{url}}/viajes?conductorId=2
+Authorization: Bearer {{token}}
+
+### Listado de viajes de un vehiculo y conductor
+GET {{url}}/viajes?vehiculoId=1&conductorId=2
+Authorization: Bearer {{token}}
+
+### Detalles de viaje
+GET {{url}}/viajes/1
+Authorization: Bearer {{token}}
+
+### Registrar viaje
+# @name nuevoViaje
+POST {{url}}/viajes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "vehiculoId": 1,
+    "conductorId": 3,
+    "fechaSalida": "2026-11-10",
+    "fechaLlegada": "2026-11-11",
+    "origen": "La Rioja",
+    "destino": "San Juan",
+    "kilometros": 450.5,
+    "observaciones": "Entrega de mercadería"
+}
+
+### Registrar viaje con fecha de llegada anterior a la salida (400)
+POST {{url}}/viajes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "vehiculoId": 1,
+    "conductorId": 3,
+    "fechaSalida": "2026-11-10",
+    "fechaLlegada": "2026-11-01",
+    "origen": "La Rioja",
+    "destino": "San Juan",
+    "kilometros": 450.5
+}
+
+### Registrar viaje con vehiculo inexistente (400)
+POST {{url}}/viajes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "vehiculoId": 999,
+    "conductorId": 1,
+    "fechaSalida": "2026-11-10",
+    "fechaLlegada": "2026-11-10",
+    "origen": "La Rioja",
+    "destino": "Chilecito",
+    "kilometros": 190
+}
+
+### Modificar viaje
+PUT {{url}}/viajes/{{nuevoViaje.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "vehiculoId": 1,
+    "conductorId": 3,
+    "fechaSalida": "2026-11-10",
+    "fechaLlegada": "2026-11-11",
+    "origen": "La Rioja",
+    "destino": "San Juan",
+    "kilometros": 455,
+    "observaciones": "Se corrigieron los kilómetros"
+}
+
+### Quitar viaje
+DELETE {{url}}/viajes/{{nuevoViaje.response.body.id}}
+Authorization: Bearer {{token}}
